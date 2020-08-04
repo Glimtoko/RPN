@@ -21,16 +21,6 @@ N.b. tested with:
 #include <math.h>
 
 namespace RPN {
-    // Basic maths functions. User doesn't need to see these, so put them in a
-    // private namespace
-    namespace {
-        template <typename T> T add(T a, T b) { return a + b; }
-        template <typename T> T subtract(T a, T b) { return a - b; }
-        template <typename T> T multiply(T a, T b) { return a * b; }
-        template <typename T> T divide(T a, T b) { return a / b; }
-        template <typename T> T pow(T a, T b) { return pow(a, b); }
-    }
-
     // Alias declaration of a std::map between a std::string and a general function pointer
     template <typename T>
     using binaryOpMap = std::map <std::string, T(*)(T, T)>;
@@ -46,7 +36,14 @@ namespace RPN {
     public:
         // Default constructor sets binaryOperators to the basic maths functions
         ReversePolishNotation<T>()
-            : binaryOperators { { {"+", add}, {"-", subtract}, {"*", multiply}, {"x", multiply}, {"/", divide}, {"^", pow} } }
+            : binaryOperators{ { 
+                {"+", [](T a, T b) {return a + b; }}, 
+                {"-", [](T a, T b) {return a - b; }}, 
+                {"*", [](T a, T b) {return a * b; }}, 
+                {"x", [](T a, T b) {return a * b; }}, 
+                {"/", [](T a, T b) {return a / b; }}, 
+                {"^", [](T a, T b) {return pow(a, b); }}
+            } }
         {}
 
         // Extended constructor allows user to supplement, or replace, the default operator list
